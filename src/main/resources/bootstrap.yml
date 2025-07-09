@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: authorization-server-application
+  cloud:
+    config:
+      name: authorization-server-application, mongo
+      uri: http://localhost:1000
+      fail-fast: true

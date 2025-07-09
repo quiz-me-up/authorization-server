@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!gh-pages'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.TOKEN }}
+    steps:
+      - name: Checkout project directory
+        uses: actions/checkout@v3
+
+      - name: Setup java-maven
+        uses: quiz-me-up/reusable-workflow/.github/actions/setup-java-maven@master
+
+      - name: Maven command execution
+        shell: bash
+        run: mvn clean install
