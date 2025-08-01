@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.quizmeup</groupId>
         <artifactId>spring-cloud-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.7</version>
         <relativePath/>
     </parent>
 
@@ -15,7 +15,25 @@
     <packaging>jar</packaging>
     <artifactId>authorization-server</artifactId>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/quiz-me-up/authorization-server</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.github.quizmeup</groupId>
             <artifactId>password-encoder-starter</artifactId>
@@ -37,18 +55,8 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.quizmeup</groupId>
-            <artifactId>mongo-starter</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
+            <artifactId>spring-cloud-starter-kubernetes-client-all</artifactId>
         </dependency>
 
         <dependency>

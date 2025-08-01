@@ -1,0 +1,41 @@
+name: snapshot
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    env:
+      QUIZ_ME_UP_GITHUB_TOKEN: ${{ secrets.QUIZ_ME_UP_GITHUB_TOKEN }}
+    steps:
+      - name: Checkout project directory
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: master
+
+      - name: Generate next version
+        id: next_version
+        uses: quiz-me-up/reusable-workflow/.github/actions/next-version@master
+
+      - name: Setup java-maven
+        uses: quiz-me-up/reusable-workflow/.github/actions/setup-java-maven@master
+
+      - name: Update pom.xml to next snapshot version
+        run: |
+          NEXT_SNAPSHOT_VERSION="${{ steps.next_version.outputs.version }}-SNAPSHOT"
+          mvn versions:set -DnewVersion="$NEXT_SNAPSHOT_VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
+          mvn versions:update-property -Dproperty=sdk.version -DnewVersion="$NEXT_SNAPSHOT_VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
+          echo "Version mise à jour vers $NEXT_SNAPSHOT_VERSION"
+
+      - name: Setup git bot user
+        uses: quiz-me-up/reusable-workflow/.github/actions/setup-git-bot-user@master
+
+      - name: Commit and push snapshot update
+        run: |
+          NEXT_SNAPSHOT_VERSION="${{ steps.next_version.outputs.full_version }}-SNAPSHOT"
+          git add .
+          git commit --allow-empty -m "ci: development train $NEXT_SNAPSHOT_VERSION"
+          git push origin master

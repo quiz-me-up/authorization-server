@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import io.github.quizmeup.authorization.server.service.FeignUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -44,12 +45,17 @@ public class AuthorizationServerConfiguration {
     private static final String SIGN_IN_PAGE = "/login";
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(final PasswordEncoder passwordEncoder) {
+    public RegisteredClientRepository registeredClientRepository(final PasswordEncoder passwordEncoder,
+                                                                 final OAuth2ClientProperties oauth2ClientProperties) {
+        final String serverClientSecret = oauth2ClientProperties.getRegistration()
+                .get("server")
+                .getClientSecret();
+
         final RegisteredClient serverClient = RegisteredClient
                 .withId(UUID.randomUUID().toString())
                 .clientId("server")
                 .clientName("server")
-                .clientSecret(passwordEncoder.encode("secret"))
+                .clientSecret(passwordEncoder.encode(serverClientSecret))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scope("read")

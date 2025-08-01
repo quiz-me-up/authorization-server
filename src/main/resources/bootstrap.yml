@@ -1,8 +1,15 @@
 spring:
   application:
     name: authorization-server-application
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "!kubernetes"
   cloud:
     config:
-      name: authorization-server-application, mongo
-      uri: http://localhost:1000
+      enabled: true
       fail-fast: true
+      name: ${spring.application.name}, mongo
+      uri: http://localhost:1000/configuration

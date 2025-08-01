@@ -69,10 +69,8 @@ public class FeignUserService implements UserDetailsService, OAuth2TokenCustomiz
 
                     if (principal instanceof UserDetails userDetails) {
                         email = userDetails.getUsername();
-                        logger.debug("Customizing JWT for UserDetails: {}", email);
                     } else if (principal instanceof DefaultOidcUser oidcUser) {
                         email = oidcUser.getEmail();
-                        logger.debug("Customizing JWT for OidcUser: {}", email);
                     }
 
                     if (StringUtils.isNotBlank(email)) {
