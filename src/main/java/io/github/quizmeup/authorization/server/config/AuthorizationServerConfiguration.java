@@ -2,7 +2,7 @@ package io.github.quizmeup.authorization.server.config;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import io.github.quizmeup.authorization.server.service.FeignUserService;
+import io.github.quizmeup.authorization.server.service.FeignUserDetailsService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
@@ -156,19 +156,19 @@ public class AuthorizationServerConfiguration {
 
 
     @Bean
-    public AuthenticationManager authenticationManager(final FeignUserService feignUserService,
+    public AuthenticationManager authenticationManager(final FeignUserDetailsService feignUserDetailsService,
                                                        final PasswordEncoder passwordEncoder) {
-        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(feignUserService);
+        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(feignUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(authProvider);
     }
 
     @Bean
     public OAuth2TokenGenerator<OAuth2Token> tokenGenerator(final JWKSource<SecurityContext> jwkSource,
-                                                            final FeignUserService feignUserService) {
+                                                            final FeignUserDetailsService feignUserDetailsService) {
         JwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource);
         JwtGenerator jwtAccessTokenGenerator = new JwtGenerator(jwtEncoder);
-        jwtAccessTokenGenerator.setJwtCustomizer(feignUserService);
+        jwtAccessTokenGenerator.setJwtCustomizer(feignUserDetailsService);
         return new DelegatingOAuth2TokenGenerator(jwtAccessTokenGenerator);
     }
 
@@ -255,9 +255,9 @@ public class AuthorizationServerConfiguration {
         final HttpSecurity actuatorHttp = httpSecurity.securityMatcher("/actuator/**");
 
         actuatorHttp
-                        .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                                .anyRequest().permitAll()
-                        );
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                        .anyRequest().permitAll()
+                );
 
         return actuatorHttp.build();
     }

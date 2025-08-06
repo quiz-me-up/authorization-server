@@ -18,13 +18,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class FeignUserService implements UserDetailsService, OAuth2TokenCustomizer<JwtEncodingContext> {
+public class FeignUserDetailsService implements UserDetailsService, OAuth2TokenCustomizer<JwtEncodingContext> {
 
-    private static final Logger logger = LoggerFactory.getLogger(FeignUserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FeignUserDetailsService.class);
 
     private final UserFeignClient userFeignClient;
 
-    public FeignUserService(UserFeignClient userFeignClient) {
+    public FeignUserDetailsService(UserFeignClient userFeignClient) {
         this.userFeignClient = userFeignClient;
     }
 

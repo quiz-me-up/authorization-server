@@ -27,7 +27,6 @@ jobs:
         run: |
           NEXT_SNAPSHOT_VERSION="${{ steps.next_version.outputs.version }}-SNAPSHOT"
           mvn versions:set -DnewVersion="$NEXT_SNAPSHOT_VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
-          mvn versions:update-property -Dproperty=sdk.version -DnewVersion="$NEXT_SNAPSHOT_VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
           echo "Version mise à jour vers $NEXT_SNAPSHOT_VERSION"
 
       - name: Setup git bot user
